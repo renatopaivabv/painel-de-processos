@@ -5,38 +5,9 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Permission;
 
+
 class PermissionSeeder extends Seeder
 {
-    private $permissions = [
-        'user-create' => 'Criar Usuário',
-        'user-show' => 'Listar Usuários',
-        'user-edit' => 'Editar Usuário',
-        'user-destroy' => 'Excluir Usuário',
-        'role-create' => 'Criar Regra',
-        'role-show' => 'Listar Regras',
-        'role-edit' => 'Editar Regra',
-        'role-destroy' => 'Excluir Regra',
-        'permission-create' => 'Criar Permissão',
-        'permission-show' => 'Listar Permissões',
-        'permission-edit' => 'Editar Permissão',
-        'permission-destroy' => 'Excluir Permissão',
-        'unity-create' => 'Criar Unidade',
-        'unity-show' => 'Listar Unidades',
-        'unity-edit' => 'Editar Unidade',
-        'unity-destroy' => 'Excluir Unidade',
-        'coordination-create' => 'Criar Coordenação',
-        'coordination-show' => 'Listar Coordenações',
-        'coordination-edit' => 'Editar Coordenação',
-        'coordination-destroy' => 'Excluir Coordenação',
-        'category-create' => 'Criar Categoria',
-        'category-show' => 'Listar Categorias',
-        'category-edit' => 'Editar Categoria',
-        'category-destroy' => 'Excluir Categoria',
-        'process-create' => 'Criar Processo',
-        'process-show' => 'Listar Processos',
-        'process-edit' => 'Editar Processo',
-        'process-destroy' => 'Excluir Processo'
-    ];
 
     /**
      * Run the database seeds.
@@ -46,8 +17,26 @@ class PermissionSeeder extends Seeder
 
     public function run()
     {
-        foreach($this->permissions as $k => $v){
-            Permission::factory()->create(['name'=> $k, 'display_name' => $v]);
+
+        $roles = config('accesscontrollist')['roles'];
+
+        $acl_permissions = [];
+        foreach($roles as $k => $permissions){
+            foreach($permissions['permissions'] as $name => $display_name)
+                if(!in_array($name, array_column($acl_permissions, 'name')))
+                    $acl_permissions[] =
+                        ['name' => $name, 'display_name' => $display_name];
+        }
+
+        $permissions_db = Permission::all()->map(function($p){
+            return ['name' => $p->name, 'display_name' => $p->display_name];
+        })->toArray();
+
+        foreach($acl_permissions as $p){
+            if(!in_array($p['name'], array_column($permissions_db, 'name')))
+                Permission::factory()->create(
+                    ['name'=> $p['name'], 'display_name' => $p['display_name']]
+                );
         }
     }
 }

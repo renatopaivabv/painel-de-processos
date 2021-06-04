@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Permission;
+use App\Models\Coordination;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PermissionFactory extends Factory
+class CoordinationFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Permission::class;
+    protected $model = Coordination::class;
 
     /**
      * Define the model's default state.
@@ -21,13 +21,10 @@ class PermissionFactory extends Factory
      */
     public function definition()
     {
-        $display_name = $this->faker->words(2, true);
-
         return [
-            'name' => \Illuminate\Support\Str::slug($display_name),
-            'display_name' => $display_name,
-            'is_menu' => true
+            'name' => $this->faker->sentence(),
+            'description' => $this->faker->sentence(),
+            'active' => true
         ];
     }
-
 }

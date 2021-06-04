@@ -5,18 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Permission extends Model
+class Process extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'display_name',
-        'is_menu'
+        'description',
+        'file'
     ];
 
-    public function roles()
+    public function category()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsTo(Category::class);
     }
 }

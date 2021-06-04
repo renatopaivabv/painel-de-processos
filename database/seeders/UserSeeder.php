@@ -15,16 +15,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::factory()
-                ->count(4)
-                ->state(new Sequence(
-                    ['name' => 'admin'],
-                    ['name' => 'chief'],
-                    ['name' => 'manager'],
-                    ['name' => 'user'],
-                ))
-                ->create();
-        foreach($users as $user){
+        $roles = array_keys(config('accesscontrollist')['roles']);
+
+        $get_sequence = collect(['name' => 'admin'],['name' => 'chief']);
+        foreach($roles as $role){
+            $user = User::factory()->create(['name' => $role]);
             if($r = Role::where('name', $user->name)->first()){
                 $user->roles()->attach($r);
             }

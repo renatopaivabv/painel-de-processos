@@ -45,4 +45,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function unities()
+    {
+        return $this->belongsToMany(Unity::class);
+    }
+
+    public function coordinations()
+    {
+        return $this->belongsToMany(Coordination::class);
+    }
 }
